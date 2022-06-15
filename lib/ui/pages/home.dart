@@ -26,7 +26,8 @@ import 'package:intl/intl.dart';
 import '/ui/widgets/task_tile.dart';
 
 class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+  const Home({Key? key, required this.isAdmin}) : super(key: key);
+  final bool isAdmin;
 
   @override
   _HomeState createState() => _HomeState();
@@ -38,6 +39,7 @@ class _HomeState extends State<Home> {
   @override
   DateTime _selectedDate = DateTime.parse(DateTime.now().toString());
   final _taskController = Get.put(TaskController());
+
   late var notifyHelper;
   bool animate = false;
   double left = 630;
@@ -47,7 +49,6 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     _taskStream = DatabaseService().tasks;
-
     _timer = Timer(Duration(milliseconds: 500), () {
       setState(() {
         animate = true;
@@ -149,14 +150,16 @@ class _HomeState extends State<Home> {
               ),
             ],
           ),
-          MyButton(
-            label: '+addtask'.tr,
-            onTap: () async {
-              //await Get.to(AddTaskPage());
-              await Get.to(AddTaskFirebase());
-              _taskController.getTasks();
-            },
-          ),
+          widget.isAdmin
+              ? MyButton(
+                  label: '+addtask'.tr,
+                  onTap: () async {
+                    //await Get.to(AddTaskPage());
+                    await Get.to(AddTaskFirebase());
+                    _taskController.getTasks();
+                  },
+                )
+              : const SizedBox.shrink(),
         ],
       ),
     );

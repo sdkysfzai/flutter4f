@@ -17,7 +17,6 @@ class _ChatScreenState extends State<ChatScreen> {
   final messageTextController = TextEditingController();
   final _auth = FirebaseAuth.instance;
   final AuthController authController = AuthController.to;
-
   String messageText = '';
 
   @override
@@ -76,12 +75,16 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   FlatButton(
                     onPressed: () {
-                      messageTextController.clear();
-                      _firestore.collection('messages').add({
-                        'text': messageText,
-                        'sender': authController.emailController.text,
-                        'msgTime': DateTime.now(),
-                      });
+                      if (messageText.isNotEmpty) {
+                        print('ASD ${loggedInUser.email}');
+                        messageTextController.clear();
+                        _firestore.collection('messages').add({
+                          'text': messageText,
+                          'sender': loggedInUser.email,
+                          'msgTime': DateTime.now(),
+                        });
+                        messageText = '';
+                      }
                     },
                     child: Text(
                       'Send',
@@ -121,7 +124,7 @@ class MessagesStream extends StatelessWidget {
           final messageSender =
               (message.data() as Map<String, dynamic>)['sender'];
 
-          final currentUser = loggedInUser;
+          final currentUser = loggedInUser.email;
 
           final messageBubble = MessageBubble(
             sender: messageSender,

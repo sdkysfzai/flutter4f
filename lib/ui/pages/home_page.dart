@@ -24,14 +24,13 @@ import '../../constants/theme.dart';
 
 class HomePage extends StatefulWidget {
   @override
-
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
   late Future<List<Widget>> getScreens;
 
- void getLocationData() async {
+  void getLocationData() async {
     var weatherData = await WeatherModel().getLocationWeather();
 
     Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -41,13 +40,11 @@ class _HomePageState extends State<HomePage> {
     }));
   }
 
-
   /// IMPORTANT don't use this directly in the FutureBuilder
   Future<List<Widget>> _getScreens() async {
-    bool isAdmin = await Get.find<AuthController>().isAdmin();      
+    bool isAdmin = await Get.find<AuthController>().isAdmin();
     return [
-       
-      isAdmin ? Home() : HomeUser(),  
+      Home(isAdmin: isAdmin),
       ChatScreen(),
       Fav(),
       Settings(),
@@ -65,10 +62,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-  
 
     getScreens = _getScreens();
-   
+
     _timer = Timer(Duration(milliseconds: 500), () {
       setState(() {
         animate = true;
@@ -80,8 +76,6 @@ class _HomePageState extends State<HomePage> {
 
   int _currentIndex = 0;
   final navigationKey = GlobalKey<CurvedNavigationBarState>();
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -109,49 +103,43 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.white,
                 child: ClipRect(
                   child: SafeArea(
-                    top: false,
-                    child: Scaffold(
-                      extendBody: true,
-                      appBar: AppBar(
-      backgroundColor: secClr,
-      elevation: 0,
-      leading: GestureDetector(
-        onTap: () {
-          getLocationData();
-          
-          
-
-        },
-                      
-        child: Icon(
-          Icons.cloud,
-          color: darkGreyClr,
-        ),
-        
-      ),
-      actions: [
-        Icon(
-          Icons.navigation_rounded,
-          color: darkGreyClr,
-        ),
-        SizedBox(
-          width: 20,
-        ),
-      ]),
-                      backgroundColor: secClr,
-                      body: snapshot.data![_currentIndex],
-                      bottomNavigationBar: CurvedNavigationBar(
-                        key: navigationKey,
-                        items: items,
-                        color: Colors.white,
-                        backgroundColor: Colors.transparent,
-                        height: 60,
-                        index: _currentIndex,
-                        onTap: (index) =>
-                            setState(() => this._currentIndex = index),
-                      ),
-                    )
-                  ),
+                      top: false,
+                      child: Scaffold(
+                        extendBody: true,
+                        appBar: AppBar(
+                            backgroundColor: secClr,
+                            elevation: 0,
+                            leading: GestureDetector(
+                              onTap: () {
+                                getLocationData();
+                              },
+                              child: Icon(
+                                Icons.cloud,
+                                color: darkGreyClr,
+                              ),
+                            ),
+                            actions: [
+                              Icon(
+                                Icons.navigation_rounded,
+                                color: darkGreyClr,
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                            ]),
+                        backgroundColor: secClr,
+                        body: snapshot.data![_currentIndex],
+                        bottomNavigationBar: CurvedNavigationBar(
+                          key: navigationKey,
+                          items: items,
+                          color: Colors.white,
+                          backgroundColor: Colors.transparent,
+                          height: 60,
+                          index: _currentIndex,
+                          onTap: (index) =>
+                              setState(() => this._currentIndex = index),
+                        ),
+                      )),
                 ),
               );
           }
