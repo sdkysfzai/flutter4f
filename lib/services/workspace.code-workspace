@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "loginv1-main",
+			"path": "../.."
+		},
+		{
+			"name": "images",
+			"path": "../../../task_management-master/images"
+		}
+	],
+	"settings": {}
+}
